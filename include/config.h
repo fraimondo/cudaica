@@ -252,11 +252,11 @@ void printConfig(eegdataset_t *dataset);
 
 void help(void);
 
-char* getParam(char * needle, char* haystack[], int count);
+char* getParam(const char * needle, char* haystack[], int count);
 
 error parseConfig(char* filename, eegdataset_t *dataset);
 
-int isParam(char * needle, char* haystack[], int count);
+int isParam(const char * needle, char* haystack[], int count);
 
 void printConfig(eegdataset_t *dataset);
 
