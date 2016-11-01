@@ -25,7 +25,7 @@ cudaica_selectDevice(PyObject *self, PyObject *args)
 
 	if (!PyArg_ParseTuple(args, "I|I", &device, &verbose)) {
 		printf("No device selected, using default: %i\n", device);
-		
+
 	}
 
 	selectDevice(device, verbose);
@@ -35,7 +35,7 @@ cudaica_selectDevice(PyObject *self, PyObject *args)
 
 void freeDataset(PyObject * dataset) {
 	freeEEG(PyCapsule_GetPointer(dataset, NULL));
-	
+
 }
 
 static PyObject *
@@ -43,9 +43,9 @@ cudaica_initDefaultConfig(PyObject *self, PyObject *args)
 {
 	eegdataset_t * dataset = malloc(sizeof(eegdataset_t));
 	initDefaultConfig(dataset);
-	
+
 	PyObject * retorno = PyCapsule_New(dataset, NULL, &freeDataset);
-	
+
 	return retorno;
 }
 
@@ -56,7 +56,7 @@ cudaica_printConfig(PyObject *self, PyObject *args)
 
 	if (!PyArg_ParseTuple(args, "O", &dataset)) {
 		PyErr_SetString(cudaicaError, "No dataset specified.");
-		
+
 	}
 
 	printConfig(PyCapsule_GetPointer(dataset, NULL));
@@ -70,7 +70,7 @@ cudaica_checkDefaultConfig(PyObject *self, PyObject *args)
 
 	if (!PyArg_ParseTuple(args, "O", &dataset)) {
 		PyErr_SetString(cudaicaError, "No dataset specified.");
-		
+
 	}
 
 	checkDefaultConfig(PyCapsule_GetPointer(dataset, NULL));
@@ -88,7 +88,7 @@ cudaica_debugData(PyObject *self, PyObject *args)
 	}
 	int i = 0;
 	PyArrayObject * ndarray = (PyArrayObject*) data;
-	
+
 	printf("nd %d\n", PyArray_NDIM(ndarray));
 	printf("dimensions ");
 	for (i = 0; i < PyArray_NDIM(ndarray); i++) {
@@ -99,8 +99,8 @@ cudaica_debugData(PyObject *self, PyObject *args)
 		printf(" %d ", (int)PyArray_STRIDE(ndarray, i));
 	}
 	printf("\ndata at %p\n", (void*)PyArray_DATA(ndarray));
-	
-	
+
+
 	return PyLong_FromUnsignedLong(0);
 }
 
@@ -121,7 +121,7 @@ cudaica_setIntParameter(PyObject *self, PyObject *args)
 	}
 
 	eegdataset_t * set = PyCapsule_GetPointer(dataset, NULL);
-	
+
 	if (strcmp("nchannels", param) == 0) {
 		set->config.nchannels = value;
 	} else if (strcmp("nsamples", param) == 0) {
@@ -163,7 +163,7 @@ cudaica_setRealParameter(PyObject *self, PyObject *args)
 	}
 
 	eegdataset_t * set = PyCapsule_GetPointer(dataset, NULL);
-	
+
 	if (strcmp("lrate", param) == 0) {
 		set->config.lrate = value;
 	} else if (strcmp("nochange", param) == 0) {
@@ -199,7 +199,7 @@ static int sbool2int(char * item) {
 		result = -1;
 	}
 	return result;
-	
+
 }
 
 static PyObject *
@@ -244,25 +244,25 @@ cudaica_transfer2DDataTo(PyObject *self, PyObject *args)
 	int i = 0;
 	PyArrayObject * ndarray = (PyArrayObject*) data;
 	eegdataset_t * set = PyCapsule_GetPointer(dataset, NULL);
-	
+
 	natural nchannels = set->config.nchannels;
 	natural nsamples = set->config.nsamples;
-	
-	
+
+
 	if (set->data != NULL) free(set->data);
-	
+
 	set->data = malloc(nchannels * nsamples * sizeof(real));
-	
-	
-	
+
+
+
 	int chandim = -1;
-	
+
 	if (PyArray_NDIM(ndarray) != 2) {
 		PyErr_SetString(cudaicaError, "This function loads 2dimension only.");
 		return NULL;
 	}
-	
-	
+
+
 	for (i = 0; i < PyArray_NDIM(ndarray); i++) {
 		printf("Dimension %d (%d - %d strides)\n", i, (int)PyArray_DIM(ndarray, i), (int)PyArray_STRIDE(ndarray, i));
 		if ((int)PyArray_DIM(ndarray, i) == nchannels) {
@@ -272,10 +272,10 @@ cudaica_transfer2DDataTo(PyObject *self, PyObject *args)
 	}
 	if (chandim == -1) {
 		PyErr_SetString(cudaicaError, "No dimension matches nchannels.");
-		
+
 		return NULL;
 	}
-	
+
 	if ((int)PyArray_STRIDE(ndarray, chandim) != 8) {
 		printf("Main dimension (%d) has %d strides. Data arrangement needed.\n", chandim, (int)PyArray_STRIDE(ndarray, chandim));
 		int chan = 0;
@@ -284,7 +284,7 @@ cudaica_transfer2DDataTo(PyObject *self, PyObject *args)
 		real * realsrc = (real*)PyArray_DATA(ndarray);
 		int chanoffset = (int)PyArray_STRIDE(ndarray, chandim)/8;
 		//int sampleoffset = ndarray->strides[chandim == 0 ? 1 : 0]/8;
-		
+
 		for (chan = 0; chan < nchannels; chan++) {
 			for (sample = 0; sample < nsamples; sample++) {
 				realdata[chan + sample * nchannels] = realsrc[sample + chan * chanoffset];
@@ -293,10 +293,10 @@ cudaica_transfer2DDataTo(PyObject *self, PyObject *args)
 	} else {
 		memcpy((char*)set->data, (char*)PyArray_DATA(ndarray), nsamples*nchannels*sizeof(real));
 	}
-	
+
 	set->nchannels = nchannels;
 	set->nsamples = nsamples;
-	
+
 	return PyLong_FromUnsignedLong(0);
 }
 
@@ -313,11 +313,11 @@ cudaica_transferWeightsFrom(PyObject *self, PyObject *args)
 	}
 
 
-	
+
 	eegdataset_t * set = PyCapsule_GetPointer(dataset, NULL);
-	
+
 	natural nchannels = set->nchannels;
-	
+
 	npy_intp dims[2];
 	dims[0] = nchannels;
 	dims[1] = nchannels;
@@ -345,12 +345,12 @@ cudaica_transferDataFrom(PyObject *self, PyObject *args)
 	}
 
 
-	
+
 	eegdataset_t * set = PyCapsule_GetPointer(dataset, NULL);
-	
+
 	natural nchannels = set->nchannels;
 	natural nsamples = set->nsamples;
-	
+
 	npy_intp dims[2];
 	dims[0] = nchannels;
 	dims[1] = nsamples;
@@ -378,7 +378,7 @@ cudaica_transferSphereFrom(PyObject *self, PyObject *args)
 	}
 
 	eegdataset_t * set = PyCapsule_GetPointer(dataset, NULL);
-	
+
 	natural nchannels = set->nchannels;
 
 	npy_intp dims[2];
@@ -414,7 +414,7 @@ cudaica_preprocess(PyObject *self, PyObject *args)
 		fprintf(stdout, "====================================\n");
 		fprintf(stdout, " Pre processing\n");
 		fprintf(stdout, "====================================\n\n");
-		
+
 	}
 	printf("Loading dataset...");
 	err = loadToDevice(dataset);
@@ -445,10 +445,10 @@ cudaica_preprocess(PyObject *self, PyObject *args)
 	clock_t min = (dif/60) % 60;
 	clock_t sec = ((dif)) % 60;
 	fprintf(stdout, "Elapsed Pre Processing time: %lu tics = %lu h %lu m %lu s\n", time2-time1, hour, min, sec);
-	if (dataset->config.verbose != 0) { 
+	if (dataset->config.verbose != 0) {
 		fprintf(stdout, "====================================\n\n");
 	}
-	
+
 	return PyLong_FromUnsignedLong(0);
 }
 
@@ -487,11 +487,11 @@ cudaica_postprocess(PyObject *self, PyObject *args)
 	}
 
 	postprocess(dataset);
-	
+
 	return PyLong_FromUnsignedLong(0);
 }
 
-//~ 
+//~
 //~ static PyObject *
 //~ bindings_listarfiltros(PyObject *self, PyObject *args)
 //~ {
@@ -507,31 +507,31 @@ cudaica_postprocess(PyObject *self, PyObject *args)
     //~ }
 	//~ return Py_BuildValue("O", pylist);
 //~ }
-//~ 
+//~
 //~ static PyObject *
 //~ bindings_distancias(PyObject *self, PyObject *args)
 //~ {
 	//~ const char *archivo1;
 	//~ const char *archivo2;
-//~ 
+//~
 	//~ if (!PyArg_ParseTuple(args, "ss", &archivo1, &archivo2)) {
 		//~ PyErr_SetString(bindingsError, "Archivos no especifidados");
 		//~ return NULL;
 	//~ }
-//~ 
-	//~ 
+//~
+	//~
 	//~ distancias * resultado = bindiff(archivo1, archivo2);
 	//~ printf("Distancias entre %s y %s = %lu %lu %lu %f\n", archivo1, archivo2, resultado->pixeles, resultado->sumdif, resultado->maxdif, resultado->radio);
-	//~ 
+	//~
 	//~ PyObject * retorno = PyDict_New();
-	//~ 
+	//~
 	//~ PyDict_SetItemString(retorno, "pixeles", PyLong_FromUnsignedLong(resultado->pixeles));
 	//~ PyDict_SetItemString(retorno, "difpixeles", PyLong_FromUnsignedLong(resultado->difpixeles));
 	//~ PyDict_SetItemString(retorno, "maxdif", PyLong_FromUnsignedLong(resultado->maxdif));
 	//~ PyDict_SetItemString(retorno, "sumdif", PyLong_FromUnsignedLong(resultado->sumdif));
 	//~ PyDict_SetItemString(retorno, "radio", PyFloat_FromDouble(resultado->radio));
 	//~ PyDict_SetItemString(retorno, "porcentaje", PyFloat_FromDouble(resultado->porcentaje));
-	//~ 
+	//~
 	//~ freedist(resultado);
 	//~ return retorno;
 //~ }
@@ -560,7 +560,23 @@ static PyMethodDef CudaicaMethods[] = {
 };
 
 
+#if PY_MAJOR_VERSION == 3
+static struct PyModuleDef cudaicamodule = {
+   PyModuleDef_HEAD_INIT,
+   "cudaica",   /* name of module */
+   NULL, /* module documentation, may be NULL */
+   -1,       /* size of per-interpreter state of the module,
+                or -1 if the module keeps state in global variables. */
+   CudaicaMethods
+};
+#endif
 
+PyMODINIT_FUNC PyInit_cudaica(void) {
+	PyObject *m;
+	m = PyModule_Create(&cudaicamodule);
+	if (m == NULL)
+		return NULL;
+#else
 PyMODINIT_FUNC
 initcudaica(void)
 {
@@ -570,7 +586,11 @@ initcudaica(void)
 	m = Py_InitModule("cudaica", CudaicaMethods);
 	if (m == NULL)
 		return;
+#endif
 	cudaicaError = PyErr_NewException("cudaica.error", NULL, NULL);
 	Py_INCREF(cudaicaError);
 	PyModule_AddObject(m, "error", cudaicaError);
+	#if PY_MAJOR_VERSION == 3
+		return m;
+	#endif
 }
