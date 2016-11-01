@@ -569,7 +569,6 @@ static struct PyModuleDef cudaicamodule = {
                 or -1 if the module keeps state in global variables. */
    CudaicaMethods
 };
-#endif
 
 PyMODINIT_FUNC PyInit_cudaica(void) {
 	PyObject *m;

@@ -26,7 +26,7 @@ cudaica.o: ../cudaica.c ../cudaica
 
 cudaica.so: setup.py ../cudaica cudaica.o 
 	$(PYTHON) setup.py -I ../include -I $(CUDA_INCLUDE) -L $(CUDA_LIBS_FOLDER) $(CUDA_PYTHON_LIBS) $(BLAS_LIBS) $(LAPACK_LIBS) -E $(R250)  build
-	cp build/lib.linux-x86_64-*/$@ .
+	cp build/lib.linux-x86_64-*/cudaica*.so ./$@
 	
 ../cudaica$(EXEEXT):
 	$(MAKE) -C ../ cudaica$(EXEEXT)
