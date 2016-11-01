@@ -36,7 +36,11 @@ AC_ARG_WITH([cuda-arch],
 		20 = Compute Capability 2.0 -
 		21 = Compute Capability 2.1 -
 		30 = Compute Capability 3.0 -
-		35 = Compute Capability 3.5])],
+		32 = Compute Capability 3.2 -
+        35 = Compute Capability 3.5 -
+        50 = Compute Capability 5.0 -
+        52 = Compute Capability 5.2 -
+        53 = Compute Capability 5.3])],
 	[CUDA_ARCH=$with_cuda_arch],
 	[CUDA_ARCH=20])
 
