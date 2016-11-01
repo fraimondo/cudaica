@@ -10,32 +10,32 @@
 #define PRINTSTRING(val) printf("\t%s = %s\n", str_val(val), (dataset->config.val));
 
 
-char* getParam(char * needle, char* haystack[], int count) {
+char* getParam(const char * needle, char* haystack[], int count) {
 	int i = 0;
 	for (i = 0; i < count; i ++) {
 		if (strcmp(needle, haystack[i]) == 0) {
 			if (i < count -1) {
 				return haystack[i+1];
-			}	
+			}
 		}
 	}
-	return 0;	
+	return 0;
 }
 
 
-int isParam(char * needle, char* haystack[], int count) {
+int isParam(const char * needle, char* haystack[], int count) {
 	int i = 0;
 	for (i = 0; i < count; i ++) {
 		if (strcmp(needle, haystack[i]) == 0) {
 			return 1;
 		}
 	}
-	return 0;	
+	return 0;
 }
 
 
 
-error getReal(char* buffer[], char* string, int count, real* result) {
+error getReal(char* buffer[], const char* string, int count, real* result) {
 	int i = 0;
 	for (i = 0; i < count; i ++) {
 		if (strstr(buffer[i], string) != NULL) {
@@ -57,7 +57,7 @@ error getReal(char* buffer[], char* string, int count, real* result) {
 }
 
 
-error getBool(char* buffer[], char* string, int count, natural* result) {
+error getBool(char* buffer[], const char* string, int count, natural* result) {
 	int i = 0;
 	for (i = 0; i < count; i ++) {
 		if (strstr(buffer[i], string) != NULL) {
@@ -92,7 +92,7 @@ error getBool(char* buffer[], char* string, int count, natural* result) {
 	return ERRORNOPARAM;
 }
 
-error getVerbose(char* buffer[], char* string, int count, natural* result) {
+error getVerbose(char* buffer[], const char* string, int count, natural* result) {
 	int i = 0;
 	for (i = 0; i < count; i ++) {
 		if (strstr(buffer[i], string) != NULL) {
@@ -127,7 +127,7 @@ error getVerbose(char* buffer[], char* string, int count, natural* result) {
 	return ERRORNOPARAM;
 }
 
-error getInt(char* buffer[], char* string, int count, natural* result) {
+error getInt(char* buffer[], const char* string, int count, natural* result) {
 	int i = 0;
 	for (i = 0; i < count; i ++) {
 		if (strstr(buffer[i], string) != NULL) {
@@ -148,7 +148,7 @@ error getInt(char* buffer[], char* string, int count, natural* result) {
 	return ERRORNOPARAM;
 }
 
-error getString(char* buffer[], char* string, int count, char** result) {
+error getString(char* buffer[], const char* string, int count, char** result) {
 	int i = 0;
 	for (i = 0; i < count; i ++) {
 		if (strstr(buffer[i], string) != NULL) {
@@ -191,7 +191,7 @@ void help() {
 	printf("\tFILE:\t\tFile path/name\n");
 	printf("\tON/OFF:\t\tValue \"on\" or \"off\" (without quotes)\n");
 	printf("\tF:\t\tFloat\n");
-	
+
 	printf("\n");
 	printf("Required parameters:\n");
 	printf("\tDataFile\tFILE\t\tBinary file with the inputa data in\n\t\t\t\t\tsingle precission values (matrix)\n");
@@ -201,7 +201,7 @@ void help() {
 	printf("\tWeightsOutFile\tFILE\t\tBinary file to store ICA weight matrix (floats)\n");
 	printf("\tSphereFile\tFILE\t\tBinary file to store sphering matrix (floats)\n");
 	printf("\t\n");
-	
+
 	printf("Optional parameters (with default values):\n");
 	printf("\tsphering\tON/OFF\t\tToggles sphering of data (on/off)   {default: on}\n");
 	printf("\tbias\t\tON/OFF\t\tPerform bias adjustment (on/off) {default: on}\n");
@@ -219,7 +219,7 @@ void help() {
 	printf("\tverbose\tON (2) | MATLAB (1) | OFF (0)\t\tPrint extra information {default: on}\n");
 	printf("\tseed\tF\t\tRandom seed {default: time()}\n");
 	printf("\n");
-	
+
 	printf("Optional parameters (without default values):\n");
 	printf("\tActivationsFile\tFILE\t\tActivations (matrix) of each component (ncomps by points)\n");
 	printf("\tBiasFile\tFILE\t\tBias weights vector (ncomps)\n");
@@ -234,12 +234,12 @@ void printConfig(eegdataset_t *dataset) {
 	PRINTINT(nsamples);
 	PRINTSTRING(weightsoutfile);
 	PRINTSTRING(sphereoutfile);
-	
+
 	PRINTBOOL(sphering);
 	PRINTBOOL(biasing);
 	PRINTINT(extblocks);
 	PRINTINT(pca);
-	
+
 	PRINTSTRING(weightsinfile);
 	PRINTREAL(lrate)
 	PRINTINT(block);
@@ -249,7 +249,7 @@ void printConfig(eegdataset_t *dataset) {
 	PRINTREAL(annealstep)
 	PRINTREAL(annealdeg)
 	PRINTREAL(momentum)
-	
+
 	PRINTINT(nsub);
 	PRINTINT(pdfsize);
 	PRINTINT(urextblocks);
@@ -275,7 +275,7 @@ error parseConfig(char* filename, eegdataset_t *dataset) {
 	int lines = 0;
 	while (fgets(buffer, 5000, cfile) != NULL) lines++;
 	rewind(cfile);
-	
+
 	char **configs = (char**)malloc(lines * sizeof(char*));
 	char *current;
 	int i = 0;
@@ -289,23 +289,23 @@ error parseConfig(char* filename, eegdataset_t *dataset) {
 			configs[i] = NULL;
 		}
 	}
-	
+
 	if (getString(configs, "DataFile", lines, &dataset->config.datafile) != SUCCESS) {
 		fprintf(stderr, "ERROR: Invalid data file\n");
 		help();
 		exit(0);
 	}
-	
+
 	if (getInt(configs, "chans", lines, (natural*) &dataset->config.nchannels) != SUCCESS) {
 		fprintf(stderr,"ERROR: Invalid number of channels\n");
 		help();
 		exit(0);
 	}
-	
+
 	/*
 	 * frames and epochs are used to calc datalength
 	 * Original Infomax uses them for probperm.
-	 */ 
+	 */
 	natural frames = 0;
 	natural epochs = 1;
 	if (getInt(configs, "frames", lines, &frames) != SUCCESS) {
@@ -313,94 +313,94 @@ error parseConfig(char* filename, eegdataset_t *dataset) {
 		help();
 		exit(0);
 	}
-	
+
 	if (getInt(configs, "epochs", lines, &epochs) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid number of epochs\n");
 	}
-	
+
 	dataset->config.nsamples = frames * epochs;
-	
-	
+
+
 	if (getString(configs, "WeightsOutFile", lines, &dataset->config.weightsoutfile) != SUCCESS) {
 		fprintf(stderr,"ERROR: Invalid weights out file\n");
 		help();
 		exit(0);
 	}
-	
+
 	if (getString(configs, "SphereFile", lines, &dataset->config.sphereoutfile) != SUCCESS) {
 		fprintf(stderr,"ERROR: Invalid sphere out file\n");
 		help();
 		exit(0);
 	}
-	
+
 	if (getBool(configs, "sphering", lines, &dataset->config.sphering)  == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid sphering flag\n");
 	}
-	
+
 	if (getBool(configs, "bias", lines, &dataset->config.biasing)  == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid bias flag\n");
 	}
-	
-	
+
+
 	if (getInt(configs, "extended", lines, &dataset->config.extblocks)  == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid extended blocks number\n");
 	}
-	
+
 	dataset->config.extended = (dataset->config.extblocks != 0);
-	
+
 	if (getInt(configs, "pca", lines, &dataset->config.pca)  == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid pca number\n");
 	}
-	
+
 	if (dataset->config.pca != 0) {
 		fprintf(stderr,"WARNING: PCA currently not supported, will continue with pca = 0\n");
 		dataset->config.pca = 0;
 	}
-	
+
 	if (getString(configs, "WeightsInFile", lines, &dataset->config.weightsinfile) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid initial weights file\n");
 	}
-	
+
 	if (getString(configs, "ActivationsFile", lines, &dataset->config.activationsfile) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid activations output file\n");
 	}
-	
+
 	if (getString(configs, "BiasFile", lines, &dataset->config.biasfile) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid bias output file\n");
 	}
-	
+
 	if (getString(configs, "SignFile", lines, &dataset->config.signfile) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid sings output file\n");
 	}
-	
+
 	if (getReal(configs, "lrate", lines, &dataset->config.lrate) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid initial lrate\n");
 	}
-	
+
 	if (getInt(configs, "blocksize", lines, &dataset->config.block) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid block size\n");
 	}
-	
+
 	if (getReal(configs, "stop", lines, &dataset->config.nochange) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid stop change\n");
 	}
-	
+
 	if (getInt(configs, "maxsteps", lines, &dataset->config.maxsteps) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid max steps\n");
 	}
-	
+
 	if (getBool(configs, "posact", lines, &dataset->config.posact) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid posact flag\n");
 	}
-	
+
 	if (getReal(configs, "annealstep", lines, &dataset->config.annealstep) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid anneal step\n");
 	}
-	
+
 	if (getReal(configs, "annealdeg", lines, &dataset->config.annealdeg) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid angle for annealing\n");
 	}
-	
+
 	if (getReal(configs, "momentum", lines, &dataset->config.momentum) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid momentum\n");
 	}
@@ -412,7 +412,7 @@ error parseConfig(char* filename, eegdataset_t *dataset) {
 	if (getInt(configs, "seed", lines, &dataset->config.seed) == ERRORINVALIDPARAM) {
 		fprintf(stderr,"ERROR: Invalid seed value\n");
 	}
-		
+
 	DPRINTF(2, "Config file parsed correctly\n");
 	printConfig(dataset);
 	for (i = 0; i < lines; i++) {
@@ -420,11 +420,11 @@ error parseConfig(char* filename, eegdataset_t *dataset) {
 			free(configs[i]);
 		}
 	}
-	
+
 	free(configs);
 	free(buffer);
 	return SUCCESS;
-	
+
 }
 
 /*
@@ -441,7 +441,7 @@ void initDefaultConfig(eegdataset_t *set) {
 	set->config.biasing = DEFAULT_BIASING;
 	set->config.extblocks = DEFAULT_EXTBLOCKS;
 	set->config.pca = DEFAULT_PCA;
-	
+
 	set->config.weightsinfile = NULL;
 	set->config.lrate = 0.0;
 	set->config.block = 0;
@@ -451,12 +451,12 @@ void initDefaultConfig(eegdataset_t *set) {
 	set->config.annealstep = 0.0f;
 	set->config.annealdeg = DEFAULT_ANNEALDEG;
 	set->config.momentum = DEFAULT_MOMENTUM;
-			
+
 
 	set->config.activationsfile = NULL;
 	set->config.biasfile = NULL;
 	set->config.signfile = NULL;
-	
+
 	set->config.nsub = DEFAULT_NSUB;
 	set->config.pdfsize = MAX_PDFSIZE;
 	set->config.urextblocks = DEFAULT_UREXTBLOCKS;
@@ -464,7 +464,7 @@ void initDefaultConfig(eegdataset_t *set) {
 	set->config.extended = DEFAULT_EXTENDED;
 	set->config.verbose = DEFAULT_VERBOSE;
 	set->config.seed = (int)time(NULL);
-	
+
 	set->nchannels = 0;
 	set->nsamples = 0;
 	set->devicePointer = NULL;
@@ -477,15 +477,14 @@ void initDefaultConfig(eegdataset_t *set) {
 	set->h_weights = NULL;
 	set->bias = NULL;
 	set->signs = NULL;
-	
+
 }
 
 void checkDefaultConfig(eegdataset_t *set) {
-	
+
 	if (set->config.lrate == 0) set->config.lrate = DEFAULT_LRATE(set->config.nchannels);
 	if (set->config.block == 0) set->config.block = DEFAULT_BLOCK(set->config.nsamples);
 	if (set->config.annealstep == 0.0) {
 		set->config.annealstep = (set->config.extended) ? DEFAULT_EXTANNEAL : DEFAULT_ANNEALSTEP;
 	}
 }
-
