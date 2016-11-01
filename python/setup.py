@@ -68,6 +68,8 @@ if args[0].libparams is not None:
 if args[0].extraparams is not None:
     newargs = filter(lambda a: a != '-E', newargs)
 
+newargs = list(newargs)
+
 includes = []
 libs = []
 libdirs = []
@@ -90,7 +92,7 @@ for elem in args[0].extraparams:
     extra.append(elem)
     newargs.remove(elem)
 
-extra_compile_args = map((lambda x: '-I' + x), includes)
+extra_compile_args = list(map((lambda x: '-I' + x), includes))
 
 cudaica = Extension('cudaica', sources=['bindings.c'], extra_objects=extra,
                     extra_compile_args=extra_compile_args, library_dirs=libdirs,
