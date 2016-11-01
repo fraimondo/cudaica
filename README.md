@@ -29,8 +29,8 @@ Is an implementation of [Infomax ICA](https://en.wikipedia.org/wiki/Infomax) mad
 
 ###Advanced configurations options
 Additionaly, when configuring the source code, the following options can be passed to the configure script:
-* `–with-cuda`: Use specified path as cuda base directory. Example: `–with-cuda=/opt/cuda`. Default: `/usr/local/cuda`.
-* `–with-cuda-arch`: Generate cudaica for the specified cuda compute capability. Options are:
+* `–-with-cuda`: Use specified path as cuda base directory. Example: `–with-cuda=/opt/cuda`. Default: `/usr/local/cuda`.
+* `–-with-cuda-arch`: Generate cudaica for the specified cuda compute capability. Options are:
   * 11 = Compute Capability 1.1
   * 12 = Compute Capability 1.2
   * 13 = Compute Capability 1.3
@@ -42,13 +42,14 @@ Additionaly, when configuring the source code, the following options can be pass
   * 50 = Compute Capability 5.0
   * 52 = Compute Capability 5.2
   * 53 = Compute Capability 5.3
-* `–with-double`: Enables or disables double precision floating point. Options are:
+* `–-with-double`: Enables or disables double precision floating point. Options are:
   * `yes` (default)
   * `no`
-* `–enable-debug`: Enable debugging features and use specified level. Generates executable with debugging symbols and nvcc shows extra information. Example `–enable-debug=2`.
+* `–-enable-debug`: Enable debugging features and use specified level. Generates executable with debugging symbols and nvcc shows extra information. Example `–enable-debug=2`.
   1. Function calls.
   2. Memory alloc information.
   3. Function calls inside iterations.
+* `--enable-python`: Enables python bindings (default=`disabled`)
   
   
 More information [LIAA](https://liaa.dc.uba.ar/node/10) website
