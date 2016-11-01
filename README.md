@@ -17,6 +17,7 @@ Is an implementation of [Infomax ICA](https://en.wikipedia.org/wiki/Infomax) mad
 
 * Cuda Toolkit: 4.0+ required
 * GCC
+* Autotools, Autoconf and M4
 * GFORTRAN compiler
 * BLAS library
 
