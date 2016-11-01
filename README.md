@@ -55,3 +55,6 @@ Additionaly, when configuring the source code, the following options can be pass
   
 More information [LIAA](https://liaa.dc.uba.ar/node/10) website
 
+## Cite
+
+Raimondo, Federico, Juan E. Kamienkowski, Mariano Sigman, and Diego Fernandez Slezak. “CUDAICA: GPU Optimization of Infomax-ICA EEG Analysis.” Computational Intelligence and Neuroscience 2012 (2012).
