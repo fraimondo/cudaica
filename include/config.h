@@ -164,7 +164,7 @@ typedef int error;
 #define STR_EXPAND(tok) #tok
 #define xstr(tok) STR_EXPAND(tok)
 
-#define SVNVERSION xstr(SVNREVISION)
+#define GITVERSION xstr(GITHASH)
 
 #if CUDA_VERSION>4
 	#define SYMBOL(x) x
@@ -237,11 +237,12 @@ typedef struct {
 	config_t 		config;
 } eegdataset_t;
 
+extern char * programname; // Fix for NVCC bug 01/11/2016
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-extern char * programname;
 
 void initDefaultConfig(eegdataset_t *set);
 

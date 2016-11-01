@@ -26,12 +26,12 @@ AC_ARG_WITH([cuda],
     [AS_HELP_STRING([--with-cuda],
 		[PATH prefix where cuda is installed  @<:@default=/usr/local/cuda@:>@])
 	])
-	
+
 AC_ARG_WITH([cuda-arch],
     [AS_HELP_STRING([--with-cuda-arch],
 		[CUDA Architecture to use  @<:@default=20@:>@. Options are:
-		11 = Compute Capability 1.1 - 
-		12 = Compute Capability 1.2 - 
+		11 = Compute Capability 1.1 -
+		12 = Compute Capability 1.2 -
 		13 = Compute Capability 1.3 -
 		20 = Compute Capability 2.0 -
 		21 = Compute Capability 2.1 -
@@ -39,10 +39,10 @@ AC_ARG_WITH([cuda-arch],
 		35 = Compute Capability 3.5])],
 	[CUDA_ARCH=$with_cuda_arch],
 	[CUDA_ARCH=20])
-    
+
 AC_ARG_ENABLE([debug],
 	[AS_HELP_STRING([--enable-debug],[Enables debugging features @<:@default=disabled@:>@])],
-	[USEDEBUG="true" 
+	[USEDEBUG="true"
 	DEBUG=$enable_debug],[USEDEBUG="false"])
 
 AC_ARG_WITH([double],
@@ -69,7 +69,7 @@ AC_ARG_WITH([double],
 
 AC_ARG_ENABLE([python],
 	[AS_HELP_STRING([--enable-python],[Enables python bindings@<:@default=disabled@:>@])],
-	[USEPYTHON="true" 
+	[USEPYTHON="true"
 	PYTHON=$enable_python],[USEPYTHON="false"])
 
 
@@ -137,7 +137,7 @@ fi
 
 
 VERSION="`./evalrev`"
-NVCCFLAGS+=" -DSVNREVISION=${VERSION}"
+NVCCFLAGS+=" -DGITHASH=${VERSION}"
 NVCCFLAGS+=" ${OSFLAGS}"
 
 
@@ -154,12 +154,12 @@ then
 	NVCCFLAGS+=" -DCUDA_VERSION=${CUDA_VERSION}"
 	NVCC_VERSION_MAJOR=$(echo $NVCC_VERSION | cut -d'.' -f1)
 	NVCC_VERSION_MINOR=$(echo $NVCC_VERSION | cut -d'.' -f2)
-	
+
 	if test $NVCC_VERSION_MAJOR -lt 4
 	then
 		AC_MSG_ERROR([CUDA compiler version is lower than 4.0 = $NVCC_VERSION])
 	fi
-	
+
 	AC_MSG_CHECKING([whether nvcc works])
 	cat > conftest.cu <<EOF
 #ifdef USESINGLE
@@ -175,7 +175,7 @@ then
 			__syncthreads();
 
 		}
-		
+
 		int main(int argc, char** argv)  {
 #ifdef USESINGLE
 			float a = 0.0;
@@ -191,12 +191,12 @@ EOF
 	then
 		working_nvcc=yes
 		AC_MSG_RESULT([Ok])
-	else 
+	else
 		working_nvcc=no
 		AC_MSG_ERROR([CUDA compiler is not working right.])
 	fi
 	rm -f conftest.cu conftest.o
-	
+
 else
 	AC_MSG_ERROR([CUDA compiler is needed.])
 fi
@@ -250,7 +250,7 @@ AC_SUBST(CUDA_PYTHON_LIBS)
 AC_SUBST(NVCCFLAGS)
 AC_SUBST(R250)
 AC_SUBST(R250_target)
- 
+
 if test x$USEPYTHON = xtrue
 then
 	AC_CONFIG_FILES([python/Makefile])

@@ -15,18 +15,13 @@ cudaica_LDADD =
 SUFFIXES=.cu
 .cu.o:
 	$(NVCC) $(NVCCFLAGS) $(INCLUDE) -c -o $@ $<
-	
+
 cudaica$(EXEEXT): cudaica.c $(cudaica_OBJECTS) $(STATICLIBS)
 	$(NVCC) $(NVCCFLAGS) $(INCLUDE) $(LAPACK_LIBS) $(BLAS_LIBS) $(LIBS) $(FLIBS) $(CUDA_LIBS) -o $@ $^
-	
+
 $(R250): $(R250_sources)
 	cd lib/r250/ && make $(R250_target)
-	
+
 dist-hook:
-	mkdir -p .tmpclean
-	rm -rf .tmpclean/*
-	cp -r $(distdir)/* .tmpclean/
-	./deleter.py .tmpclean/ $(distdir)/
-	rm -rf .tmpclean
 	echo "echo $(shell ./evalrev) " > $(distdir)/evalrev
 	chmod +x $(distdir)/evalrev

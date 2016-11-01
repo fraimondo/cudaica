@@ -1,6 +1,6 @@
-/*	
+/*
  *	Copyright (C) 2011, Federico Raimondo (fraimondo@dc.uba.ar)
- *	
+ *
  *	This file is part of Cudaica.
  *
  *  Cudaica is free software: you can redistribute it and/or modify
@@ -12,7 +12,7 @@
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  *  GNU General Public License for more details.
- * 
+ *
  *  You should have received a copy of the GNU General Public License
  *  along with Cudaica.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -59,12 +59,12 @@ int main (int argc, char* argv[]) {
 			exit(-1);
 		}
 		(void)signal(SIGHUP, SIG_IGN);
-		
+
 	}
 #ifdef DEBUG
-	printf("Starting CUDAICA v%d with floating point numbers size = %lu bytes and DEBUG level %d\n", SVNREVISION, sizeof(real), DEBUG);
-#else	
-	printf("Starting CUDAICA v%d with floating point numbers size = %lu bytes\n", SVNREVISION, sizeof(real));
+	printf("Starting CUDAICA v%s with floating point numbers size = %lu bytes and DEBUG level %d\n", GITVERSION, sizeof(real), DEBUG);
+#else
+	printf("Starting CUDAICA v%s with floating point numbers size = %lu bytes\n", GITVERSION, sizeof(real));
 #endif
 
 	if (isParam("-h", argv, argc) || isParam("--help", argv, argc)) {
@@ -78,22 +78,22 @@ int main (int argc, char* argv[]) {
 	} else {
 		selectDevice(0, 1);
 	}
-	
+
 	if ( ! isParam("-f", argv, argc)) {
 		printf("\nERROR::Script configuration file is mandatory\n\n\n");
 		help();
 		return -1;
-	} 
-	
-	
+	}
+
+
 
 	char *filename = getParam("-f", argv, argc);
 	eegdataset_t *dataset = malloc(sizeof(eegdataset_t));
 	initDefaultConfig(dataset);
 	error err = parseConfig(filename, dataset);
 	checkDefaultConfig(dataset);
-	
-	
+
+
 	if (err == SUCCESS) {
 		fprintf(stdout, "====================================\n");
 		fprintf(stdout, " Pre processing\n");
@@ -119,7 +119,7 @@ int main (int argc, char* argv[]) {
 			whiten(dataset);
 			printf("Done!\n");
 		}
-		
+
 		printDatasetInfo(dataset);
 		clock_t time2 = clock();
 		time (&end);
@@ -133,7 +133,7 @@ int main (int argc, char* argv[]) {
 		fprintf(stdout, " Starting Infomax\n");
 		fprintf(stdout, "====================================\n\n");
 		infomax(dataset);
-		
+
 		fprintf(stdout, "====================================\n");
 		fprintf(stdout, " Post processing\n");
 		fprintf(stdout, "====================================\n\n");
@@ -141,9 +141,9 @@ int main (int argc, char* argv[]) {
 		postprocess(dataset);
 		saveEEG(dataset);
 		freeEEG(dataset);
-		
-		
+
+
 	}
-	
+
 	return 0;
 }
