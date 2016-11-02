@@ -580,7 +580,6 @@ PyMODINIT_FUNC
 initcudaica(void)
 {
 	PyObject *m;
-	import_array();
 
 	m = Py_InitModule("cudaica", CudaicaMethods);
 	if (m == NULL)
@@ -589,7 +588,8 @@ initcudaica(void)
 	cudaicaError = PyErr_NewException("cudaica.error", NULL, NULL);
 	Py_INCREF(cudaicaError);
 	PyModule_AddObject(m, "error", cudaicaError);
-	#if PY_MAJOR_VERSION == 3
-		return m;
-	#endif
+	import_array();
+#if PY_MAJOR_VERSION == 3
+	return m;
+#endif
 }
