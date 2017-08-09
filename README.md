@@ -1,19 +1,20 @@
-#CUDAICA
 
-##What is CUDAICA?
+# CUDAICA
+
+## What is CUDAICA?
 Is an implementation of [Infomax ICA](https://en.wikipedia.org/wiki/Infomax) made on CUDA.
 
-##What is Infomax ICA?
+## What is Infomax ICA?
 [Infomax ICA](https://en.wikipedia.org/wiki/Infomax) is an algorithm to perform Independent Component Analysis
 
-##Requirements
+## Requirements
 
-###Hardware
+### Hardware
 
 * A CUDA enabled GPU
 * Enough RAM!
 
-###Software
+### Software
 
 * Cuda Toolkit: 4.0+ required
 * GCC
@@ -22,13 +23,13 @@ Is an implementation of [Infomax ICA](https://en.wikipedia.org/wiki/Infomax) mad
 * BLAS library
 
 
-##Installation
+## Installation
 
 1. Download the source code
 2. Configure
 3. Make
 
-###Advanced configurations options
+### Advanced configurations options
 Additionaly, when configuring the source code, the following options can be passed to the configure script:
 * `–-with-cuda`: Use specified path as cuda base directory. Example: `–with-cuda=/opt/cuda`. Default: `/usr/local/cuda`.
 * `–-with-cuda-arch`: Generate cudaica for the specified cuda compute capability. Options are:
