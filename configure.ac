@@ -131,7 +131,7 @@ if test x$USEDEBUG = xtrue
 then
     NVCCFLAGS="-DDEBUG=${DEBUG} -G -g -gencode=arch=compute_${CUDA_COMPUTE_ARCH},code=sm_${CUDA_ARCH} --ptxas-options=\"-v\" "
 else
-    NVCCFLAGS="-O -gencode=arch=compute_${CUDA_COMPUTE_ARCH},code=sm_${CUDA_ARCH} "
+    NVCCFLAGS="-O3 -gencode=arch=compute_${CUDA_COMPUTE_ARCH},code=sm_${CUDA_ARCH} "
 fi
 
 if test x$USESINGLE = xtrue
